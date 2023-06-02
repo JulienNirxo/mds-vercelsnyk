@@ -3,6 +3,7 @@ name: Vercel Preview Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
 on:
   pull_request:
@@ -21,9 +22,7 @@ jobs:
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Check Snyk Security
-        uses: snyk/actions@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        uses: snyk/actions@master          
         with:
           command: test --all-projects --json
       - name: Deploy Project Artifacts to Vercel
