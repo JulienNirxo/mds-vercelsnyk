@@ -3,7 +3,6 @@ name: Vercel Preview Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
 on:
   pull_request:
@@ -21,15 +20,22 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
+      # Ajoutez cette étape pour exécuter actions/checkout avant d'utiliser snyk/actions/cli
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Check Snyk Security
-        uses: snyk/actions/setup@806182742461562b67788a64410098c9d9b96adb     
+        id: snyk
+        uses: snyk/actions/cli@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          command: test --all-projects --json
+          args: test --all-projects --json
       - name: Deploy Project Artifacts to Vercel
         id: deploy
         run: |
-          if [[ "0" == "0" ]]; then
-            echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
+          if [[ "${{ steps.snyk.outputs.exitcode }}" == "0" ]]; then
+            echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
           else
             echo "Snyk detected security issues, deployment to Vercel is blocked."
             exit 1
