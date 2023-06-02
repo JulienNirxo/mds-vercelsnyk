@@ -32,7 +32,13 @@ jobs:
           fi
       - name: Deploy Project Artifacts to Vercel
         id: deploy
-        run: echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+        run: 
+          if [[ "${{ steps.snyk.outcome }}" == "success" ]]; then
+            echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+          else
+            echo "Snyk detected security issues, deployment to Vercel is blocked."
+            exit 1
+          fi
       - uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
