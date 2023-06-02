@@ -1,11 +1,5 @@
-console.log('salut');
-console.log('le js c cool');
-console.log('le js c cool et marrant');
-console.log('le js c cool et marrant et facile');
-console.log('le js c cool et marrant');
-console.log('le js c cool et marrant et facile');
-console.log('le js c cool');
-console.log('le js c cool et marrant');
-console.log('le js c cool et marrant et facile');
-console.log('le js c cool et marrant');
-console.log('le js c cool et marrant et facile');
+let titleElement = document.getElementById("title");
+let name = new URLSearchParams(window.location.search).get("name");
+if (name !== null) {
+  titleElement.innerHTML = `Hello user`;
+}
