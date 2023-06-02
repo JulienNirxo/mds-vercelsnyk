@@ -25,9 +25,9 @@ jobs:
       - name: Check Snyk Code test results
         run: |
           if [[ "${{ steps.snyk.outcome }}" == "success" ]]; then
-            echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
+            echo "Snyk is OK !" >> $GITHUB_ENV
           else
-            echo "Snyk detected security issues, deployment to Vercel is blocked."
+            echo "Snyk is not OK :("
             exit 1
           fi
       - name: Deploy Project Artifacts to Vercel
