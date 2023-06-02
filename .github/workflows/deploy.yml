@@ -15,6 +15,7 @@ jobs:
     secrets: 
       SNYK_TOKEN : ${{ secrets.SNYK_TOKEN }}
   Deploy-Preview:
+    needs: snykScan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
