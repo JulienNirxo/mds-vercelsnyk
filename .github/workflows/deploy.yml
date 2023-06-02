@@ -20,7 +20,10 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
-      # Ajoutez cette condition pour vérifier si le workflow Snyk a réussi
+      # Ajoutez cette étape pour exécuter actions/checkout avant d'utiliser snyk/actions/cli
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Check Snyk Security
         id: snyk
         uses: snyk/actions/cli@master
